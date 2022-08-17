@@ -1,0 +1,118 @@
+﻿@model IEnumerable<ToDoList.Core.DTOs.TodoDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+@section Header{
+    @await Html.PartialAsync("_Header")
+}
+<h1>@User.Identity.Name</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AddedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DuetoDateTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var count = 0;
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td id="@count" style="display:none">
+                        @{
+                            var def = "Title: " + item.Title + " | Content: " + item.Content + " | DueDate: " + item.DuetoDateTime;
+                            <p class="text-justify text-danger">@def</p>
+                        }
+                    </td>
+                    <td id="@count">
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Content)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IsDone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AddedDate)
+                    </td>
+                    <td name="DueDate">
+                        @Html.DisplayFor(modelItem => item.DuetoDateTime)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
+                        @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                    </td>
+                </tr>
+                count++;
+            }
+        }
+    </tbody>
+</table>
+
+
+@section Scripts{
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css" />
+
+
+<script>
+
+    $(document).ready(function () {
+        var fullDate = new Date();
+        console.log(fullDate);
+        var twoDigitMonth = fullDate.getMonth() + 1 + ""; if (twoDigitMonth.length == 1) twoDigitMonth = "0" + twoDigitMonth;
+        var twoDigitHour = fullDate.getHours() + ""; if (twoDigitHour.length == 1) twoDigitHour = "0" + twoDigitHour;
+        var twoDigitMinute = fullDate.getMinutes() + ""; if (twoDigitMinute.length == 1) twoDigitMinute = "0" + twoDigitMinute;
+        var currentDate = fullDate.getDate() + "." + twoDigitMonth + "." + fullDate.getFullYear() + " " + twoDigitHour + ":" + twoDigitMinute + ":00";
+        console.log(currentDate);
+
+        $("[name=DueDate]").each(function (index, element) {
+            if (element.innerHTML.trim() < currentDate.toString().trim()) {
+                $("#" + index).dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    buttons: {
+                        Cancel: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+
+            }
+        });
+    });
+
+
+</script>
+
+}
